@@ -1,0 +1,10 @@
+version: '3'
+services:
+  pacman:
+    image: python:2.7
+    container_name: pacman
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python
+    tty: true
