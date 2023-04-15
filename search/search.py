@@ -100,14 +100,35 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
+    return search(problem, util.Stack())
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
+    return search(problem, util.Queue())
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first."
+    fringe = util.PriorityQueue()
+    initial_state = problem.getStartState()
+    initial_actions = []
+    initial_cost = 0
+    initial_candidate = (initial_state, initial_actions, initial_cost)
+    fringe.push(initial_candidate, initial_cost)
+    closed_set = set()
+    while not fringe.isEmpty():
+        candidate = fringe.pop()
+        state, actions, cost = candidate
+        if problem.isGoalState(state):
+            return actions
+        if state not in closed_set:
+            closed_set.add(state)
+            candidate_successors = problem.getSuccessors(state)
+            candidate_successors = filter(lambda x: x[0] not in closed_set, candidate_successors)
+            candidate_successors = map(lambda x: (x[0], actions + [x[1]], x[2] + cost), candidate_successors)
+            for candidate in candidate_successors:
+                fringe.push(candidate, candidate[2])
 
 def nullHeuristic(state, problem=None):
     """
@@ -118,6 +139,26 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
+    fringe = util.PriorityQueue()
+    initial_state = problem.getStartState()
+    initial_actions = []
+    initial_cost = 0
+    f_n = initial_cost + heuristic(initial_state, problem)
+    initial_candidate = (initial_state, initial_actions, f_n)
+    fringe.push(initial_candidate, f_n)
+    closed_set = set()
+    while not fringe.isEmpty():
+        candidate = fringe.pop()
+        state, actions, cost = candidate
+        if problem.isGoalState(state):
+            return actions
+        if state not in closed_set:
+            closed_set.add(state)
+            candidate_successors = problem.getSuccessors(state)
+            candidate_successors = filter(lambda x: x[0] not in closed_set, candidate_successors)
+            candidate_successors = map(lambda x: (x[0], actions + [x[1]], x[2] + heuristic(x[0], problem)), candidate_successors) # min entre f_n padre?
+            for candidate in candidate_successors:
+                fringe.push(candidate, candidate[2])
 
 # Abbreviations
 bfs = breadthFirstSearch
