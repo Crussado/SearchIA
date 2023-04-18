@@ -156,9 +156,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             closed_set.add(state)
             candidate_successors = problem.getSuccessors(state)
             candidate_successors = filter(lambda x: x[0] not in closed_set, candidate_successors)
-            candidate_successors = map(lambda x: (x[0], actions + [x[1]], x[2] + heuristic(x[0], problem)), candidate_successors) # min entre f_n padre?
+            candidate_successors = map(lambda x: (x[0], actions + [x[1]], cost + x[2]), candidate_successors)
             for candidate in candidate_successors:
-                fringe.push(candidate, candidate[2])
+                fringe.push(candidate, candidate[2] + heuristic(candidate[0], problem)) # cost padre?
 
 # Abbreviations
 bfs = breadthFirstSearch

@@ -244,7 +244,7 @@ class StayWestSearchAgent(SearchAgent):
 def manhattanHeuristic(position, problem, info={}):
     "The Manhattan distance heuristic for a PositionSearchProblem"
     xy1 = position
-    p2 = problem.goal
+    xy2 = problem.goal
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
 def euclideanHeuristic(position, problem, info={}):
@@ -336,7 +336,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 def get_distance(p1, p2):
-        return ( (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 ) ** 0.5
+        return ( abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]) )
 
 def cornersHeuristic(state, problem):
     """
@@ -354,10 +354,10 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     "*** YOUR CODE HERE ***"
-
     h = 0
     actual_position = state[0]
     remaining_positions = [corner[0] for corner in state[1] if not corner[1]]
+
     while remaining_positions:
         distances = map(lambda p: (p, get_distance(actual_position, p)), remaining_positions)
         actual_position, dist = functools.reduce(lambda d1, d2: d1 if d1[1] < d2[1] else d2, distances, (None, 9999999))
